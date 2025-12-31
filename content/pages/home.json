@@ -1,0 +1,30 @@
+{
+  "page": {
+    "id": "00614306-7057-40a0-bf9d-985f1e69d27d",
+    "slug": "home",
+    "title": "home",
+    "description": null,
+    "status": "published",
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "createdAt": "2025-12-31T17:33:02.000Z",
+    "updatedAt": "2025-12-31T17:33:14.000Z"
+  },
+  "blocks": [
+    {
+      "id": "24a30f31-0b5e-4171-86a7-f59ace8dfdad",
+      "type": "hero",
+      "order": 0,
+      "content": {
+        "headline": "Random Stuff",
+        "subheadline": "It's so random",
+        "ctaText": "Hey, do it",
+        "ctaUrl": "",
+        "backgroundImage": ""
+      },
+      "createdAt": "2025-12-31T17:33:13.000Z",
+      "updatedAt": "2025-12-31T17:33:13.000Z"
+    }
+  ]
+}

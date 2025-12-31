@@ -9,7 +9,7 @@
     "metaDescription": null,
     "ogImage": null,
     "createdAt": "2025-12-31T17:33:02.000Z",
-    "updatedAt": "2025-12-31T17:33:14.000Z"
+    "updatedAt": "2025-12-31T17:34:57.000Z"
   },
   "blocks": [
     {
@@ -20,11 +20,11 @@
         "headline": "Random Stuff",
         "subheadline": "It's so random",
         "ctaText": "Hey, do it",
-        "ctaUrl": "",
+        "ctaUrl": "https://google.com",
         "backgroundImage": ""
       },
       "createdAt": "2025-12-31T17:33:13.000Z",
-      "updatedAt": "2025-12-31T17:33:13.000Z"
+      "updatedAt": "2025-12-31T17:34:55.000Z"
     }
   ]
 }

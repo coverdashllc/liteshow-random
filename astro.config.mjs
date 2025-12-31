@@ -1,10 +1,8 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 
+// https://astro.build/config
+// Static output works on Netlify, Vercel, Cloudflare Pages, and any static host
 export default defineConfig({
-  integrations: [tailwind()],
   output: 'static',
-  server: {
-    port: 4321,
-  },
+  site: '{{SITE_URL}}',
 });

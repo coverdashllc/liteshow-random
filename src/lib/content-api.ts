@@ -1,79 +1,121 @@
-/**
- * LiteShow Content API Client
- *
- * Fetches published content from the LiteShow public API
- */
+import { createClient } from '@libsql/client';
 
-const API_URL = import.meta.env.LITESHOW_API_URL || 'http://localhost:8000';
-const PROJECT_SLUG = import.meta.env.LITESHOW_PROJECT_SLUG;
+// Only create client if env vars exist (they won't exist when building the template itself)
+const turso = import.meta.env.TURSO_DATABASE_URL && import.meta.env.TURSO_AUTH_TOKEN
+  ? createClient({
+      url: import.meta.env.TURSO_DATABASE_URL,
+      authToken: import.meta.env.TURSO_AUTH_TOKEN,
+    })
+  : null;
 
-if (!PROJECT_SLUG) {
-  throw new Error('LITESHOW_PROJECT_SLUG environment variable is required');
+export interface Block {
+  id: string;
+  type: string;
+  content: Record<string, unknown>;
+  order: number;
 }
 
 export interface Page {
   id: string;
-  slug: string;
   title: string;
-  description: string | null;
-  status: string;
-  hasUnpublishedChanges: boolean;
-  metaTitle: string | null;
-  metaDescription: string | null;
-  ogImage: string | null;
-  createdAt: Date | number;
-  updatedAt: Date | number;
+  slug: string;
+  status: 'draft' | 'published';
+  seo_title?: string;
+  seo_description?: string;
+  seo_keywords?: string;
+  blocks: Block[];
 }
 
-export interface PageWithBlocks extends Page {
-  blocks: Array<{
-    id: string;
-    pageId: string;
-    type: string;
-    order: number;
-    content: any;
-    createdAt: Date | number;
-    updatedAt: Date | number;
-  }>;
-}
-
-/**
- * Fetch all published pages for the project
- */
-export async function getAllPages(): Promise<Page[]> {
-  try {
-    const response = await fetch(`${API_URL}/public/sites/${PROJECT_SLUG}/pages`);
-
-    if (!response.ok) {
-      console.error(`Failed to fetch pages: ${response.status} ${response.statusText}`);
-      return [];
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching pages:', error);
-    return [];
+export async function getPage(slug: string): Promise<Page | null> {
+  // Return null if no database client (template build without env vars)
+  if (!turso) {
+    return null;
   }
-}
 
-/**
- * Fetch a specific page with its blocks
- */
-export async function getPageBySlug(slug: string): Promise<PageWithBlocks | null> {
   try {
-    const response = await fetch(`${API_URL}/public/sites/${PROJECT_SLUG}/pages/${slug}`);
+    // Get page
+    const pageResult = await turso.execute({
+      sql: 'SELECT * FROM pages WHERE slug = ? AND status = ?',
+      args: [slug, 'published'],
+    });
 
-    if (!response.ok) {
-      if (response.status === 404) {
-        return null;
-      }
-      console.error(`Failed to fetch page: ${response.status} ${response.statusText}`);
+    if (pageResult.rows.length === 0) {
       return null;
     }
 
-    return await response.json();
+    const pageRow = pageResult.rows[0];
+
+    // Get blocks
+    const blocksResult = await turso.execute({
+      sql: 'SELECT * FROM blocks WHERE page_id = ? ORDER BY "order" ASC',
+      args: [pageRow.id as string],
+    });
+
+    const blocks: Block[] = blocksResult.rows.map((row) => ({
+      id: row.id as string,
+      type: row.type as string,
+      content: JSON.parse(row.content as string),
+      order: row.order as number,
+    }));
+
+    return {
+      id: pageRow.id as string,
+      title: pageRow.title as string,
+      slug: pageRow.slug as string,
+      status: pageRow.status as 'draft' | 'published',
+      seo_title: pageRow.seo_title as string | undefined,
+      seo_description: pageRow.seo_description as string | undefined,
+      seo_keywords: pageRow.seo_keywords as string | undefined,
+      blocks,
+    };
   } catch (error) {
     console.error('Error fetching page:', error);
     return null;
+  }
+}
+
+export async function getAllPages(): Promise<Page[]> {
+  // Return empty array if no database client (template build without env vars)
+  if (!turso) {
+    return [];
+  }
+
+  try {
+    const pagesResult = await turso.execute({
+      sql: 'SELECT * FROM pages WHERE status = ?',
+      args: ['published'],
+    });
+
+    const pages: Page[] = [];
+
+    for (const pageRow of pagesResult.rows) {
+      const blocksResult = await turso.execute({
+        sql: 'SELECT * FROM blocks WHERE page_id = ? ORDER BY "order" ASC',
+        args: [pageRow.id as string],
+      });
+
+      const blocks: Block[] = blocksResult.rows.map((row) => ({
+        id: row.id as string,
+        type: row.type as string,
+        content: JSON.parse(row.content as string),
+        order: row.order as number,
+      }));
+
+      pages.push({
+        id: pageRow.id as string,
+        title: pageRow.title as string,
+        slug: pageRow.slug as string,
+        status: pageRow.status as 'draft' | 'published',
+        seo_title: pageRow.seo_title as string | undefined,
+        seo_description: pageRow.seo_description as string | undefined,
+        seo_keywords: pageRow.seo_keywords as string | undefined,
+        blocks,
+      });
+    }
+
+    return pages;
+  } catch (error) {
+    console.error('Error fetching pages:', error);
+    return [];
   }
 }

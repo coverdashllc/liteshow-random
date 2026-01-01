@@ -1,0 +1,26 @@
+{
+  "page": {
+    "id": "ede21245-9198-488a-99c5-12090f9704e0",
+    "slug": "other",
+    "title": "other",
+    "description": null,
+    "status": "published",
+    "metaTitle": null,
+    "metaDescription": null,
+    "ogImage": null,
+    "createdAt": "2026-01-01T00:31:15.000Z",
+    "updatedAt": "2026-01-01T00:31:21.000Z"
+  },
+  "blocks": [
+    {
+      "id": "684fe93d-f97a-42b8-8330-d60570045db6",
+      "type": "markdown",
+      "order": 0,
+      "content": {
+        "markdown": "werewrewr"
+      },
+      "createdAt": "2026-01-01T00:31:19.000Z",
+      "updatedAt": "2026-01-01T00:31:19.000Z"
+    }
+  ]
+}

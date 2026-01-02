@@ -1,0 +1,30 @@
+{
+  "page": {
+    "id": "99f02569-b36c-4468-b9d0-d432813d79e5",
+    "slug": "ertert",
+    "title": "ertert",
+    "description": null,
+    "status": "saved",
+    "metaTitle": "ertert",
+    "metaDescription": "Learn more about ertert.",
+    "ogImage": null,
+    "createdAt": "2026-01-02T05:30:13.000Z",
+    "updatedAt": "2026-01-02T05:31:17.000Z"
+  },
+  "blocks": [
+    {
+      "id": "64d8fcc1-79e6-4bee-8afe-8394c9328b2f",
+      "type": "hero",
+      "order": 0,
+      "content": {
+        "headline": "This is cool",
+        "subheadline": "yes",
+        "ctaText": "Do it",
+        "ctaUrl": "",
+        "backgroundImage": ""
+      },
+      "createdAt": "2026-01-02T05:30:37.000Z",
+      "updatedAt": "2026-01-02T05:30:37.000Z"
+    }
+  ]
+}
